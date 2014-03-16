@@ -99,6 +99,11 @@ LevelGenerator.prototype.generateLevel = function(){
 		this.openRandomNode();
 	}
 
+	//Åpner noen ekstra nodes
+	for(var i = 0; i < 20; i++){
+		this.openRandomNode();
+	}
+
 	for(var i = 0; i < this.nodes.length; i++){
 		if(!this.find(this.nodes[i].root, this.bottomNode.root)){
 			this.nodes[i].isOpen = false;

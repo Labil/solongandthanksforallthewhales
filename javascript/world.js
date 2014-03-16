@@ -31,7 +31,7 @@ World.prototype.loadWorld = function(levelData){
 		}
 		else if(levelData[i] == false){
 			tile = new Tile(i, i % this.numTilesAcross * this.tileSize,
-							Math.floor(i/this.numTilesAcross) * this.tileSize, this.tileSize, 'cheese')
+							Math.floor(i/this.numTilesAcross) * this.tileSize, this.tileSize, 'wall')
 			this.walls.push(tile);
 		}
 		//An array with all tiles for reference to where in the game world the player se trouve
@@ -49,13 +49,11 @@ World.prototype.setRandomMapStartTile = function(){
 
 	var zeroPosX = this.floors[rand].xPos;
 	var zeroPosY = this.floors[rand].yPos;
+	console.log("startXPos: " + zeroPosX);
 
 	this.player = new Player(this, this.canvasCenter.x, this.canvasCenter.y,
 	                         this.tileSize, this.floors[rand].id, "player");
 
-	//yes yes hardcoding ftw
-	if(this.id == 1) this.player.setupEventListener(87, 83, 68, 65);
-	else if(this.id == 2) this.player.setupEventListener(38, 40, 39, 37);
 
 	for(var i = 0; i < this.walls.length; i++){
 		this.walls[i].xPos += this.player.xPos - zeroPosX;
@@ -79,14 +77,17 @@ World.prototype.moveWorld = function(dir){
 	}
 };
 
-World.prototype.draw = function(context){
+World.prototype.draw = function(context, world2){
 	// helper function to iterate over all elems on board and draw
     var drawElements = function(arr, context){
         for (var i = 0; i < arr.length; i++) {
             arr[i].draw(context);
         }
     };
-
+    var otherPlayer = world2.player;
+    context.drawImage(imageMgr.getImage('player'), otherPlayer.graphicsOffset, 0,
+    				  this.tileSize, this.tileSize, this.allTiles[otherPlayer.currentTile].xPos, 
+    				  this.allTiles[otherPlayer.currentTile].yPos, this.tileSize, this.tileSize);
     context.drawImage(imageMgr.getImage("stars"), 0, 0, this.game.canvasW, this.game.canvasH);
     //drawElements(this.floors, context);
     drawElements(this.walls, context);

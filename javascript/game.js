@@ -43,11 +43,19 @@ Game.prototype.init = function(){
 	this.canvasW = window.innerWidth / 2 - 20;
 	this.canvasH = window.innerHeight - 60;
 
+	this.moveDirection = {
+		"LEFT" : -1,
+		"RIGHT" : 1,
+		"UP" : - this.numTilesAcross,
+		"DOWN" : this.numTilesAcross
+	};
+
 	this.setupRenderContext();
 
 	var imgPaths = ["assets/whale_1_96px_sprite.png",
-					"assets/stone_tile_1.png", "assets/bg_stars_3.png", "assets/shadow_1.png"];
-	var imgNames = ["player", "cheese", "stars", "shadow"];
+					"assets/stone_tile_1.png", "assets/bg_stars_3.png", "assets/shadow_1.png",
+					"assets/sonar.png"];
+	var imgNames = ["player", "wall", "stars", "shadow", "sonar"];
 
 	//Lager nytt level felles for de to canvasene
 	this.levelGenerator = new LevelGenerator(this.numTilesAcross);
@@ -63,6 +71,8 @@ Game.prototype.init = function(){
 	var soundEfx; // Sound Efx
 	soundEfx = document.getElementById("soundEfx");
 	//soundEfx.play();
+
+	this.setupEventListener();
 
 }
 
@@ -109,14 +119,65 @@ Game.prototype.draw = function(){
     this.context2.fillStyle = "#01011a";
     this.context2.fillRect(0,0, this.canvasW, this.canvasH);
 
- 	this.world1.draw(this.context1);
- 	this.world2.draw(this.context2);
+ 	this.world1.draw(this.context1, this.world2);
+ 	this.world2.draw(this.context2, this.world1);
 
     requestAnimationFrame(this.draw.bind(this)); //to avoid this being window
 };
 
 Game.prototype.loadLevel = function(){
 	this.levelData = this.levelGenerator.generateLevel();
+};
+
+Game.prototype.setupEventListener = function(){
+	var self = this;
+
+	window.addEventListener("keydown", function(evt){
+		switch(evt.keyCode){
+			//up
+			case 38:
+				self.world2.player.move(self.moveDirection.UP);
+				break;
+			//down
+			case 40:
+				self.world2.player.move(self.moveDirection.DOWN);;
+				break;
+			//left
+			case 39:
+				self.world2.player.move(self.moveDirection.RIGHT);
+				break;
+			//right
+			case 37:
+				self.world2.player.move(self.moveDirection.LEFT);
+				break;
+			//0
+			case 48:
+				//sonar
+				break;
+			//World 1
+			//w
+			case 87:
+				self.world1.player.move(self.moveDirection.UP);
+				break;
+			//s
+			case 83:
+				self.world1.player.move(self.moveDirection.DOWN);
+				break;
+			//a
+			case 68:
+				self.world1.player.move(self.moveDirection.RIGHT);
+				break;
+			//d
+			case 65:
+				self.world1.player.move(self.moveDirection.LEFT);
+				break;
+			//1
+			case 49:
+				//sonar
+				break;
+			default: break;
+		}
+	});
 };
 
 
