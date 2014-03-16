@@ -4,23 +4,25 @@ var Sonar = function(startX, startY, size, numSpheres, stringGraphics){
 	this.size = size;
 	this.graphics = stringGraphics;
 	this.numberOfSpheres = numSpheres;
-	this.spiralExpConst = 0.1;
+	this.radius = 10;
+
+	
 };
 
 Sonar.prototype.draw = function(context){
-	
-	for(var i = 0; i < this.numberOfSpheres; i++){
-		for(var t = 0; t < 200; t+=1){
-			this.xPos = this.genX(t);
-			this.yPos = this.genY(t);
-			context.drawImage(imageMgr.getImage(this.graphics), this.xPos, this.yPos, this.size, this.size);
-		}
+
+	this.radius += 3;
+
+	if(this.radius <= 500){
+		var colour = '#' + Math.floor(Math.random() * 16777215).toString(16);
+		context.strokeStyle = colour;
+		context.beginPath();
+		context.arc(this.xPos, this.yPos, this.radius, 0, 2 * Math.PI, false);
+		context.closePath();
+		context.stroke();
 	}
+	
 };
 
-Sonar.prototype.genX = function(t){
-	return this.spiralExpConst * t * Math.cos(t);
-};
-Sonar.prototype.genY = function(t){
-	return this.spiralExpConst * t * Math.sin(t);
-};
+
+

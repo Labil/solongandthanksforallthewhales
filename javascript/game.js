@@ -27,6 +27,11 @@
 
 var imageMgr = new ImageManager();
 
+
+var snd = new Audio("assets/music/PF01_MXAR_Ambience_Stem_01.wav"); // buffers automatically when created
+snd.loop = true;
+//snd.play();
+
 var Game = function(){
 	
 };
@@ -68,13 +73,16 @@ Game.prototype.init = function(){
 
 	this.loadImages(imgPaths, imgNames);
 
-	var soundEfx; // Sound Efx
-	soundEfx = document.getElementById("soundEfx");
-	//soundEfx.play();
 
 	this.setupEventListener();
 
 }
+
+Game.prototype.stress = function(){
+	//var snd2 = new Audio("assets/music/PF01_MXAR_Ambience_Stem_01.wav"); // buffers automatically when created
+	//snd2.loop = true;
+	//snd2.play();
+};
 
 Game.prototype.setupRenderContext = function(){
 	this.canvas1 = document.createElement("canvas");
@@ -96,8 +104,14 @@ Game.prototype.setupRenderContext = function(){
 
 	this.context2 = this.canvas2.getContext("2d");
 
-	
 };
+
+Game.prototype.resizeCanvas = function() {
+    this.canvas1.width = window.innerWidth / 2 -20;
+    this.canvas1.height = window.innerHeight - 60;
+	this.canvas2.width = window.innerWidth /2 -20;
+    this.canvas2.height = window.innerHeight -60;
+}
 
 //After the images are fully loaded, drawing of screen can begin
 Game.prototype.loadImages = function(imgPaths, imgNames){
@@ -109,6 +123,10 @@ Game.prototype.startDrawing = function(){
 };
 
 Game.prototype.draw = function(){
+
+	if(this.world1.player.currentTile == this.world2.player.currentTile){
+		console.log("WIN");
+	}
 
     this.context1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
     this.context2.clearRect(0, 0, this.canvas2.width, this.canvas2.height);
@@ -129,8 +147,14 @@ Game.prototype.loadLevel = function(){
 	this.levelData = this.levelGenerator.generateLevel();
 };
 
+Game.prototype.checkConnection = function(root1, roo2){
+	return this.levelGenerator.find(root1, root2);
+};
+
 Game.prototype.setupEventListener = function(){
 	var self = this;
+
+	window.addEventListener('resize', this.resizeCanvas.bind(self), false);
 
 	window.addEventListener("keydown", function(evt){
 		switch(evt.keyCode){
@@ -152,7 +176,7 @@ Game.prototype.setupEventListener = function(){
 				break;
 			//0
 			case 48:
-				//sonar
+				self.world1.emitSonar();
 				break;
 			//World 1
 			//w
@@ -173,11 +197,15 @@ Game.prototype.setupEventListener = function(){
 				break;
 			//1
 			case 49:
-				//sonar
+				self.world1.emitSonar();
 				break;
 			default: break;
 		}
 	});
+};
+
+Game.prototype.gameOver = function(){
+	//Show death screen
 };
 
 

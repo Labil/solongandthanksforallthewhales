@@ -100,7 +100,7 @@ LevelGenerator.prototype.generateLevel = function(){
 	}
 
 	//Åpner noen ekstra nodes
-	for(var i = 0; i < 20; i++){
+	for(var i = 0; i < 40; i++){
 		this.openRandomNode();
 	}
 

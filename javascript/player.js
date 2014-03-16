@@ -29,6 +29,19 @@ var Player = function(world, xPos, yPos, tileSize, currentTile, stringGraphics){
 
 };
 
+Player.prototype.initOxygen = function(){
+	var self = this;
+	this.oxygen = new Oxygen(100, this.id);
+	this.oxygen.startCountdown(function(){
+		console.log("Halfway mark");
+		self.world.reportStress();
+	},
+
+	function(){
+		self.world.reportDead();
+	});
+};
+
 
 Player.prototype.useSonar = function(){
 	var sonar = new Sonar(this.xPos, this.yPos, 16, 20, 'sonar');

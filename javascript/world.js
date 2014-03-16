@@ -42,6 +42,26 @@ World.prototype.loadWorld = function(levelData){
 	this.setRandomMapStartTile();
 };
 
+World.prototype.loadPlayer = function(currentTile){
+
+};
+
+World.prototype.reportDead = function(){
+	console.log("Player is dead!");
+	this.game.gameOver();
+};
+
+World.prototype.reportStress= function(){
+	console.log("Player is running out of oxygen!");
+	this.game.stress();
+};
+
+World.prototype.emitSonar = function(){
+	this.sonar = new Sonar(this.allTiles[this.player.currentTile].xPos,
+		                  this.allTiles[this.player.currentTile].yPos, 16, 20, 'sonar');
+};
+
+
 World.prototype.setRandomMapStartTile = function(){
 	var range = this.floors.length - 0;
 	var rand = Math.floor(Math.random() * range);
@@ -53,6 +73,7 @@ World.prototype.setRandomMapStartTile = function(){
 
 	this.player = new Player(this, this.canvasCenter.x, this.canvasCenter.y,
 	                         this.tileSize, this.floors[rand].id, "player");
+	this.player.initOxygen();
 
 
 	for(var i = 0; i < this.walls.length; i++){
@@ -92,5 +113,9 @@ World.prototype.draw = function(context, world2){
     //drawElements(this.floors, context);
     drawElements(this.walls, context);
     this.player.draw(context);
+
+    if(this.sonar != null){
+    	this.sonar.draw(context);
+    }
 
 };

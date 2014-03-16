@@ -3,3 +3,11 @@
     display: inline;
     margin-right: 5px;
 }
+
+body{
+	background-color: black;
+}
+
+.oxygen{
+	display: inline;
+}
