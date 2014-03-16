@@ -32,7 +32,7 @@ var Player = function(world, xPos, yPos, tileSize, currentTile, stringGraphics){
 
 Player.prototype.initOxygen = function(){
 	var self = this;
-	this.oxygen = new Oxygen(100, this.id);
+	this.oxygen = new Oxygen(50, this.id);
 	this.oxygen.startCountdown(function(){
 		console.log("Halfway mark");
 		self.world.reportStress();

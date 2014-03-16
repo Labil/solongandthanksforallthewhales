@@ -30,13 +30,25 @@ var imageMgr = new ImageManager();
 
 
 
-var Game = function(){
-	
+var Game = function(difficulty){
+	this.gameOver = false;
+	this.difficulty = difficulty;
+	console.log(this.difficulty);
 };
 
 Game.prototype.init = function(){
 	this.tileSize = 96;
 	this.numTilesAcross = 30;
+
+	if(this.difficulty == "hard"){
+		this.numTilesAcross = 50;
+	}
+	else if(this.difficulty == "normal"){
+		this.numTilesAcross = 30;
+	}
+	else if(this.difficulty == "easy"){
+		this.numTilesAcross = 20;
+	}
 	this.boardWidth = this.tileSize * this.numTilesAcross;
 
 	this.walls = [];
@@ -64,6 +76,7 @@ Game.prototype.init = function(){
 					"assets/stone_tile_1.png", "assets/bg_stars_3.png"];
 	var imgNames = ["player1", "player2", "wall", "stars"];
 
+
 	//Lager nytt level felles for de to canvasene
 	this.levelGenerator = new LevelGenerator(this.numTilesAcross);
 	this.loadLevel();
@@ -81,10 +94,13 @@ Game.prototype.init = function(){
 };
 
 Game.prototype.stress = function(){
-	var snd2 = new Audio("assets/music/PF01_MXAR_Ambience_Stem_3.wav"); // buffers automatically when created
-	snd2.volume = 0.3;
-	snd2.loop = true;
-	snd2.play();
+	if(this.gameOver){
+		return;
+	}
+	this.stressMusic = new Audio("assets/music/PF01_MXAR_Ambience_Stem_3.wav"); // buffers automatically when created
+	this.stressMusic.volume = 0.3;
+	this.stressMusic.loop = true;
+	this.stressMusic.play();
 };
 
 Game.prototype.setupRenderContext = function(){
@@ -93,6 +109,7 @@ Game.prototype.setupRenderContext = function(){
 	this.canvas1.width = this.canvasW; 
 	this.canvas1.height = this.canvasH;
 	this.canvas1.setAttribute("class", "canvas");
+	this.canvas1.setAttribute("id", "canvas1");
 	document.body.appendChild(this.canvas1);
 
 	this.context1 = this.canvas1.getContext("2d");
@@ -103,19 +120,20 @@ Game.prototype.setupRenderContext = function(){
 	this.canvas2.width = this.canvasW; 
 	this.canvas2.height = this.canvasH;
 	this.canvas2.setAttribute("class", "canvas");
+	this.canvas2.setAttribute("id", "canvas2");
 	document.body.appendChild(this.canvas2);
 
 	this.context2 = this.canvas2.getContext("2d");
 
-	/*this.oxygenbar1 = $(document.createElement('div'));
-	document.body.appendChild(this.oxygenbar1);
-	this.oxygenbar1.addClass(".oxygentext");*/
 	this. oxygenbar1 = $(document.body).append( "<p id=\"oxygen1\">Oxygen Level: </p>" );
 	this. oxygenbar2 = $(document.body).append( "<p id=\"oxygen2\">Oxygen Level: </p>" );
 
 };
 
 Game.prototype.resizeCanvas = function() {
+	if(this.gameOver){
+		return;
+	}
     this.canvas1.width = window.innerWidth / 2 -20;
     this.canvas1.height = window.innerHeight - 60;
 	this.canvas2.width = window.innerWidth /2 -20;
@@ -133,9 +151,16 @@ Game.prototype.startDrawing = function(){
 
 Game.prototype.draw = function(){
 
+	if(this.gameOver){
+		return;
+	}
 	if(this.world1.player.currentTile == this.world2.player.currentTile){
 		console.log("WIN");
+		this.gameOver = true;
+		this.endGame("win");
+		return;
 	}
+
 
     this.context1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
     this.context2.clearRect(0, 0, this.canvas2.width, this.canvas2.height);
@@ -233,8 +258,52 @@ Game.prototype.setupEventListener = function(){
 	});
 };
 
-Game.prototype.gameOver = function(){
-	//Show death screen
+Game.prototype.endGame = function(strCondition){
+	if(this.canvas1){
+		this.gameOver = true;
+		var c1 = document.getElementById("canvas1");
+		c1.parentNode.removeChild(c1);
+		var c2 = document.getElementById("canvas2");
+		c2.parentNode.removeChild(c2);
+
+		var text1 = document.getElementById("oxygen1");
+		var text2 = document.getElementById("oxygen2");
+		text1.parentNode.removeChild(text1);
+		text2.parentNode.removeChild(text2);
+
+		this.canvas1 = null;
+		this.canvas2 = null;
+		if(this.backgroundMusic){
+			this.backgroundMusic.pause();
+
+		}
+		if(this.stressMusic){
+			this.stressMusic.pause();
+			this.stressMusic.currentTime = 0;
+			this.stressMusic = null;	
+		}
+		
+		imageMgr = null;
+		window.removeEventListener('resize');
+		window.removeEventListener("keydown");
+	}
+	
+	if(strCondition == "win"){
+		$('#menu_gamewin').show();
+		var winMusic= new Audio("assets/music/PF01_MXAR_Death.wav");
+		winMusic.volume = 0.3;
+		//loseMusic.loop = true;
+		winMusic.play();
+	}
+	else{
+		$('#menu_gameover').show();
+		var loseMusic= new Audio("assets/music/PF01_MXAR_Death.wav");
+		loseMusic.volume = 0.3;
+		//loseMusic.loop = true;
+		loseMusic.play();	
+	}
+	
+	
 };
 
 

@@ -58,8 +58,8 @@ World.prototype.loadPlayer = function(currentTile){
 };
 
 World.prototype.reportDead = function(){
-	console.log("Player is dead!");
-	this.game.gameOver();
+	this.game.endGame("lose");
+
 };
 
 World.prototype.reportStress= function(){

@@ -20,8 +20,15 @@
 		<img src="assets/startmenu_2.png" width="900" />
 	</div>
 
-	<div class="startMenu" id="menu3">
-		<img src="assets/startmenu_3.png" width="900" />
+	<div class="startMenu" id="menu_gameover">
+		<a href="javascript:history.go(0)">
+			<img src="assets/startmenu_3.png" width="900" />
+		</a>
+	</div>
+	<div class="startMenu" id="menu_gamewin">
+		<a href="javascript:history.go(0)">
+			<img src="assets/startmenu_4.png" width="900" />
+		</a>
 	</div>
 
 	<script type="text/javascript" src='javascript/imageManager.js'></script>
@@ -35,16 +42,38 @@
 
 	<script type="text/javascript">
 		(function(){
-
+			var game;
 			var backgroundMusic= new Audio("assets/music/PF01_MXAR_Menu.wav");
 			backgroundMusic.volume = 0.3;
 			backgroundMusic.loop = true;
 			backgroundMusic.play();
+			var difficulty;
+			var keyHandler = function(evt){
+				console.log("key down");
+				//3
+				if(evt.keyCode == 51){
+					difficulty = "hard";
+					console.log("hard");
+				}
+				//2
+				else if(evt.keyCode == 50){
+					difficulty = "normal";
+					console.log("normal");
+				}
+				//1
+				else if(evt.keyCode == 49){
+					difficulty = "easy";
+					console.log("easy");
+				}
+			}
+			window.addEventListener("keydown", keyHandler);
 
 			var menu1 = $('#menu1');
 			var menu2 = $('#menu2');
-			var menu3 = $('#menu3');
-			menu3.hide();
+			var menu_gameover = $('#menu_gameover');
+			var menu_gamewin = $('#menu_gamewin');
+			menu_gameover.hide();
+			menu_gamewin.hide();
 			menu2.hide();
 			menu1.on('click', function(evt){
 				evt.preventDefault();
@@ -55,11 +84,12 @@
 				evt.preventDefault();
 				backgroundMusic.pause();	
 				menu2.hide();
-				var game = new Game();
+				window.removeEventListener("keydown", keyHandler);
+				game = new Game(difficulty);
 				game.init();
 			});
 		})();
-	</script
+	</script>
 
 </body>
 </html>
