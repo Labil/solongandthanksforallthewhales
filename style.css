@@ -11,3 +11,24 @@ body{
 .oxygen{
 	display: inline;
 }
+
+.startMenu{
+    position: absolute;
+    width: 900px; 
+    height: 635px; 
+    left: 50%;
+    top: 50%;
+    margin-left: -450px; 
+    margin-top: -317px; 
+}
+
+#oxygen1{
+	display: inline;
+	color: white;
+	margin-left: 200px;
+}
+#oxygen2{
+	display: inline;
+	color: white;
+	margin-left: 500px;
+}

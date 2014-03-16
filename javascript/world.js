@@ -16,6 +16,17 @@ var World = function(game, id){
 	this.allTiles = [];
 	this.id = id;
 	
+	this.playerGraphics;
+	this.otherPlayerGraphics;
+	if(this.id == 1){
+		this.playerGraphics = "player1";
+		this.otherPlayerGraphics = "player2";
+	}
+	else{
+		this.playerGraphics = "player2";
+		this.otherPlayerGraphics = "player1";	
+	}
+	
 };
 
 World.prototype.loadWorld = function(levelData){
@@ -56,9 +67,17 @@ World.prototype.reportStress= function(){
 	this.game.stress();
 };
 
-World.prototype.emitSonar = function(){
-	this.sonar = new Sonar(this.allTiles[this.player.currentTile].xPos,
-		                  this.allTiles[this.player.currentTile].yPos, 16, 20, 'sonar');
+
+World.prototype.emitSonar = function(currentTile){
+	
+	var xpos = this.allTiles[currentTile].xPos + this.tileSize/2;
+	var ypos = this.allTiles[currentTile].yPos + this.tileSize/2;
+	this.sonar = new Sonar(xpos, ypos, 16, 20, 'sonar');
+
+	var sonarSnd = new Audio("assets/fx/PF01_DX_Whale_01.wav");
+	sonarSnd.volume = 0.2;
+	sonarSnd.play();
+
 };
 
 
@@ -71,8 +90,10 @@ World.prototype.setRandomMapStartTile = function(){
 	var zeroPosY = this.floors[rand].yPos;
 	console.log("startXPos: " + zeroPosX);
 
+
+	
 	this.player = new Player(this, this.canvasCenter.x, this.canvasCenter.y,
-	                         this.tileSize, this.floors[rand].id, "player");
+	                         this.tileSize, this.floors[rand].id, this.playerGraphics);
 	this.player.initOxygen();
 
 
@@ -106,7 +127,8 @@ World.prototype.draw = function(context, world2){
         }
     };
     var otherPlayer = world2.player;
-    context.drawImage(imageMgr.getImage('player'), otherPlayer.graphicsOffset, 0,
+    context.drawImage(imageMgr.getImage(this.otherPlayerGraphics), otherPlayer.graphicsOffsetX, 
+    				  otherPlayer.graphicsOffsetY,
     				  this.tileSize, this.tileSize, this.allTiles[otherPlayer.currentTile].xPos, 
     				  this.allTiles[otherPlayer.currentTile].yPos, this.tileSize, this.tileSize);
     context.drawImage(imageMgr.getImage("stars"), 0, 0, this.game.canvasW, this.game.canvasH);

@@ -11,9 +11,9 @@ var Sonar = function(startX, startY, size, numSpheres, stringGraphics){
 
 Sonar.prototype.draw = function(context){
 
-	this.radius += 3;
+	this.radius += 20;
 
-	if(this.radius <= 500){
+	if(this.radius <= 4000){
 		var colour = '#' + Math.floor(Math.random() * 16777215).toString(16);
 		context.strokeStyle = colour;
 		context.beginPath();

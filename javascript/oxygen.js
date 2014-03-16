@@ -2,6 +2,7 @@ var Oxygen = function(amount, playerID){
     this.amount = amount;
     this.halfAmount = amount/2;
     this.playerID = playerID;
+    this.oxygenUI = $('#oxygen' + playerID);
 };
 
 Oxygen.prototype.startCountdown = function(callback1, callback2){
@@ -12,7 +13,7 @@ Oxygen.prototype.startCountdown = function(callback1, callback2){
 
     function timer(){
         self.amount -= 1;
-        console.log(self.amount);
+        self.oxygenUI.text("Oxygen level: " + self.amount);
         if(self.amount <= self.halfAmount && !callback1Used){
           callback1Used = true;
           callback1();

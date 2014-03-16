@@ -28,9 +28,7 @@
 var imageMgr = new ImageManager();
 
 
-var snd = new Audio("assets/music/PF01_MXAR_Ambience_Stem_01.wav"); // buffers automatically when created
-snd.loop = true;
-//snd.play();
+
 
 var Game = function(){
 	
@@ -55,12 +53,16 @@ Game.prototype.init = function(){
 		"DOWN" : this.numTilesAcross
 	};
 
+	this.backgroundMusic = new Audio("assets/music/PF01_MXAR_Ambience_Stem_01.wav"); // buffers automatically when created
+	this.backgroundMusic.volume = 0.3;
+	this.backgroundMusic.loop = true;
+	this.backgroundMusic.play();
+
 	this.setupRenderContext();
 
-	var imgPaths = ["assets/whale_1_96px_sprite.png",
-					"assets/stone_tile_1.png", "assets/bg_stars_3.png", "assets/shadow_1.png",
-					"assets/sonar.png"];
-	var imgNames = ["player", "wall", "stars", "shadow", "sonar"];
+	var imgPaths = ["assets/whale_2.png", "assets/whale_3.png",
+					"assets/stone_tile_1.png", "assets/bg_stars_3.png"];
+	var imgNames = ["player1", "player2", "wall", "stars"];
 
 	//Lager nytt level felles for de to canvasene
 	this.levelGenerator = new LevelGenerator(this.numTilesAcross);
@@ -76,12 +78,13 @@ Game.prototype.init = function(){
 
 	this.setupEventListener();
 
-}
+};
 
 Game.prototype.stress = function(){
-	//var snd2 = new Audio("assets/music/PF01_MXAR_Ambience_Stem_01.wav"); // buffers automatically when created
-	//snd2.loop = true;
-	//snd2.play();
+	var snd2 = new Audio("assets/music/PF01_MXAR_Ambience_Stem_3.wav"); // buffers automatically when created
+	snd2.volume = 0.3;
+	snd2.loop = true;
+	snd2.play();
 };
 
 Game.prototype.setupRenderContext = function(){
@@ -103,6 +106,12 @@ Game.prototype.setupRenderContext = function(){
 	document.body.appendChild(this.canvas2);
 
 	this.context2 = this.canvas2.getContext("2d");
+
+	/*this.oxygenbar1 = $(document.createElement('div'));
+	document.body.appendChild(this.oxygenbar1);
+	this.oxygenbar1.addClass(".oxygentext");*/
+	this. oxygenbar1 = $(document.body).append( "<p id=\"oxygen1\">Oxygen Level: </p>" );
+	this. oxygenbar2 = $(document.body).append( "<p id=\"oxygen2\">Oxygen Level: </p>" );
 
 };
 
@@ -151,6 +160,24 @@ Game.prototype.checkConnection = function(root1, roo2){
 	return this.levelGenerator.find(root1, root2);
 };
 
+Game.prototype.player1Sonar = function(){
+	console.log("player1 sonar");
+
+	var currentTile = this.world1.player.currentTile;
+
+	this.world1.emitSonar(currentTile);
+	this.world2.emitSonar(currentTile);
+};
+
+Game.prototype.player2Sonar = function(){
+	console.log("player2 sonar");
+
+	var currentTile = this.world2.player.currentTile;
+
+	this.world2.emitSonar(currentTile);
+	this.world1.emitSonar(currentTile);
+};
+
 Game.prototype.setupEventListener = function(){
 	var self = this;
 
@@ -176,7 +203,8 @@ Game.prototype.setupEventListener = function(){
 				break;
 			//0
 			case 48:
-				self.world1.emitSonar();
+				self.player2Sonar();
+				//self.world1.emitSonar();
 				break;
 			//World 1
 			//w
@@ -197,7 +225,8 @@ Game.prototype.setupEventListener = function(){
 				break;
 			//1
 			case 49:
-				self.world1.emitSonar();
+				self.player1Sonar();
+				//self.world1.emitSonar();
 				break;
 			default: break;
 		}
@@ -209,5 +238,3 @@ Game.prototype.gameOver = function(){
 };
 
 
-var game = new Game();
-game.init();

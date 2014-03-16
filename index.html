@@ -10,7 +10,19 @@
  	<!--<audio id="music1" loop="true" src="assets/music/PF01_MXAR_Ambience_Stem_01.wav" style="display: none;"></audio>
  	<audio id="music2" autoplay="false" loop="true" src="assets/music/PF01_MXAR_Ambience_Stem_01.wav" style="display: none;"></audio>
  	<audio id="music3" autoplay="false" loop="true" src="assets/music/PF01_MXAR_Ambience_Stem_01.wav" style="display: none;"></audio>-->
-	<!--<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>-->
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+	<div class="startMenu" id="menu1">
+		<img src="assets/startmenu.png" width="900" />
+	</div>
+
+	<div class="startMenu" id="menu2">
+		<img src="assets/startmenu_2.png" width="900" />
+	</div>
+
+	<div class="startMenu" id="menu3">
+		<img src="assets/startmenu_3.png" width="900" />
+	</div>
 
 	<script type="text/javascript" src='javascript/imageManager.js'></script>
 	<script type="text/javascript" src='javascript/levelGenerator.js'></script>
@@ -20,6 +32,35 @@
 	<script type="text/javascript" src='javascript/player.js'></script>
 	<script type="text/javascript" src='javascript/world.js'></script>
 	<script type="text/javascript" src='javascript/game.js'></script>
+
+	<script type="text/javascript">
+		(function(){
+
+			var backgroundMusic= new Audio("assets/music/PF01_MXAR_Menu.wav");
+			backgroundMusic.volume = 0.3;
+			backgroundMusic.loop = true;
+			backgroundMusic.play();
+
+			var menu1 = $('#menu1');
+			var menu2 = $('#menu2');
+			var menu3 = $('#menu3');
+			menu3.hide();
+			menu2.hide();
+			menu1.on('click', function(evt){
+				evt.preventDefault();
+				menu1.hide();
+				menu2.show();
+			});
+			menu2.on('click', function(evt){
+				evt.preventDefault();
+				backgroundMusic.pause();	
+				menu2.hide();
+				var game = new Game();
+				game.init();
+			});
+		})();
+	</script
+
 </body>
 </html>
 
