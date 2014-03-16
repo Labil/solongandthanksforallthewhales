@@ -13,28 +13,32 @@ var World = function(game, id){
 
 	this.walls = [];
 	this.floors = [];
+	this.allTiles = [];
 	this.id = id;
 	
 };
 
 World.prototype.loadWorld = function(levelData){
-	
+	this.numAllTiles = levelData.length;
+
 	for(var i = 0; i < levelData.length; i++){
+		var tile;
 		if(levelData[i] == true){
 			//id, xPos, yPos, width, height, graphics name
-			this.floors.push(new Tile(i, i % this.numTilesAcross * this.tileSize,
-				Math.floor(i/this.numTilesAcross) * this.tileSize, this.tileSize, 'floor'));
+			tile = new Tile(i, i % this.numTilesAcross * this.tileSize, Math.floor(i/this.numTilesAcross) * 
+							this.tileSize, this.tileSize, 'floor');
+			this.floors.push(tile);
 		}
 		else if(levelData[i] == false){
-			this.walls.push(new Tile(i, i % this.numTilesAcross * this.tileSize,
-				Math.floor(i/this.numTilesAcross) * this.tileSize, this.tileSize, 'cheese'));
+			tile = new Tile(i, i % this.numTilesAcross * this.tileSize,
+							Math.floor(i/this.numTilesAcross) * this.tileSize, this.tileSize, 'cheese')
+			this.walls.push(tile);
 		}
+		//An array with all tiles for reference to where in the game world the player se trouve
+		this.allTiles.push(tile);
 	}	
 
-	this.player = new Player(this, this.canvasCenter.x, this.canvasCenter.y, this.tileSize, "player");
 
-	if(this.id == 1) this.player.setupEventListener(38, 40, 39, 37);
-	else if(this.id == 2) this.player.setupEventListener(87, 83, 68, 65);
 	this.setRandomMapStartTile();
 };
 
@@ -45,6 +49,13 @@ World.prototype.setRandomMapStartTile = function(){
 
 	var zeroPosX = this.floors[rand].xPos;
 	var zeroPosY = this.floors[rand].yPos;
+
+	this.player = new Player(this, this.canvasCenter.x, this.canvasCenter.y,
+	                         this.tileSize, this.floors[rand].id, "player");
+
+	//yes yes hardcoding ftw
+	if(this.id == 1) this.player.setupEventListener(87, 83, 68, 65);
+	else if(this.id == 2) this.player.setupEventListener(38, 40, 39, 37);
 
 	for(var i = 0; i < this.walls.length; i++){
 		this.walls[i].xPos += this.player.xPos - zeroPosX;

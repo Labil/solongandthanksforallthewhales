@@ -1,4 +1,4 @@
-var Player = function(world, xPos, yPos, tileSize, stringGraphics){
+var Player = function(world, xPos, yPos, tileSize, currentTile, stringGraphics){
 	this.tileSize = tileSize;
 	this.hp = 3;
 	this.oxygen = 100;
@@ -6,8 +6,9 @@ var Player = function(world, xPos, yPos, tileSize, stringGraphics){
 	this.xPos = xPos;
 	this.yPos = yPos;
 	this.graphics = stringGraphics;
-	this.id;
-	//this.currentTile = currentTile;
+	this.id = world.id;
+	this.currentTile = currentTile;
+	this.numTilesAcross = this.world.numTilesAcross;
 	//this.name = name;
 
 	this.moveDirection = {
@@ -29,7 +30,6 @@ Player.prototype.setupEventListener = function(keyUP, keyDOWN, keyRIGHT, keyLEFT
 		//up
 		if(evt.keyCode == keyUP){
 			self.move(self.moveDirection.UP);
-			console.log("Moving player in world: " + self.world.id);
 		}
 		//down
 		if(evt.keyCode == keyDOWN){
@@ -49,6 +49,7 @@ Player.prototype.setupEventListener = function(keyUP, keyDOWN, keyRIGHT, keyLEFT
 Player.prototype.checkMove = function(dir){
 	var prospectiveXPos = this.xPos - dir[0];
 	var prospectiveYPos = this.yPos - dir[1];
+	//if(this.world.)
 
 
 	for(var i = 0; i < this.world.walls.length; i++){
@@ -68,6 +69,14 @@ Player.prototype.move = function(dir){
 		this.graphicsOffset = this.tileSize;
 
 	if(this.checkMove(dir)){
+
+		if(dir == this.moveDirection.LEFT) this.currentTile -= 1;
+		else if(dir == this.moveDirection.RIGHT) this.currentTile += 1;
+		else if(dir == this.moveDirection.UP) this.currentTile -= this.numTilesAcross;
+		else if(dir == this.moveDirection.DOWN) this.currentTile += this.numTilesAcross;
+
+		//console.log("Player: " + this.id + " currentTile is: " + this.currentTile);
+
 		this.world.moveWorld(dir);
 	}
 };

@@ -40,14 +40,14 @@ Game.prototype.init = function(){
 	this.floors = [];
 	this.numTiles;
 
-	this.canvasW = this.tileSize * 10;
-	this.canvasH = this.tileSize * 8;
+	this.canvasW = window.innerWidth / 2 - 20;
+	this.canvasH = window.innerHeight - 60;
 
 	this.setupRenderContext();
 
-	var imgPaths = ["assets/wall.png", "assets/floor.png", "assets/whale_1_96px_sprite.png",
-					"assets/stone_tile_1.png", "assets/bg_stars_2.png", "assets/shadow_1.png"];
-	var imgNames = ["wall", "floor", "player", "cheese", "stars", "shadow"];
+	var imgPaths = ["assets/whale_1_96px_sprite.png",
+					"assets/stone_tile_1.png", "assets/bg_stars_3.png", "assets/shadow_1.png"];
+	var imgNames = ["player", "cheese", "stars", "shadow"];
 
 	//Lager nytt level felles for de to canvasene
 	this.levelGenerator = new LevelGenerator(this.numTilesAcross);
@@ -71,7 +71,7 @@ Game.prototype.setupRenderContext = function(){
 
 	this.canvas1.width = this.canvasW; 
 	this.canvas1.height = this.canvasH;
-	//this.canvas.setAttribute("class", "canvas");
+	this.canvas1.setAttribute("class", "canvas");
 	document.body.appendChild(this.canvas1);
 
 	this.context1 = this.canvas1.getContext("2d");
@@ -81,10 +81,12 @@ Game.prototype.setupRenderContext = function(){
 
 	this.canvas2.width = this.canvasW; 
 	this.canvas2.height = this.canvasH;
-	//this.canvas.setAttribute("class", "canvas");
+	this.canvas2.setAttribute("class", "canvas");
 	document.body.appendChild(this.canvas2);
 
 	this.context2 = this.canvas2.getContext("2d");
+
+	
 };
 
 //After the images are fully loaded, drawing of screen can begin
@@ -101,6 +103,12 @@ Game.prototype.draw = function(){
     this.context1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
     this.context2.clearRect(0, 0, this.canvas2.width, this.canvas2.height);
 
+    this.context1.fillStyle = "#01011a";
+    this.context1.fillRect(0,0, this.canvasW, this.canvasH);
+
+    this.context2.fillStyle = "#01011a";
+    this.context2.fillRect(0,0, this.canvasW, this.canvasH);
+
  	this.world1.draw(this.context1);
  	this.world2.draw(this.context2);
 
@@ -109,8 +117,6 @@ Game.prototype.draw = function(){
 
 Game.prototype.loadLevel = function(){
 	this.levelData = this.levelGenerator.generateLevel();
-	this.numTiles = this.levelData.length;
-
 };
 
 
